@@ -1,0 +1,120 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  	xmlns:h="http://java.sun.com/jsf/html"
+  	xmlns:f="http://java.sun.com/jsf/core"
+  	xmlns:p="http://primefaces.org/ui"
+ 	xmlns:ui="http://java.sun.com/jsf/facelets"
+ 	template="/content/layout/template.xhtml">
+ 	<ui:define name="pageContent" >
+ 	<h:form id="frmMuhasebe">
+ 	
+ 	<p:growl id="growl" showDetail="true" sticky="true" autoUpdate="true" life="5000" /> 
+  
+  		<p:dataTable id="tblMuhasebe" widgetVar="tblMuhasebe" var="gel" value="#{gelirController.lazyModel}"
+  		paginator="true"  rows="10" lazy="true" reflow="true"
+         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+         rowsPerPageTemplate="5,10,15">
+ 			<p:column headerText="Id">
+ 				<h:outputText value="#{gel.id}" />
+ 			</p:column>
+ 
+ 			<p:column headerText="Aciklama">
+ 				<h:outputText value="#{gel.konu}" />
+ 			</p:column>
+ 
+ 			<p:column headerText="Miktar">
+ 				<h:outputText value="#{gel.miktar}" />
+ 			</p:column>
+ 			
+ 			<p:column headerText="Ogrenci Odeme">
+ 				<h:outputText value="#{gel.ogrenciOdeme.id} #{gel.ogrenciOdeme.ogrenci.ad} #{gel.ogrenciOdeme.ogrenci.soyad}"/>
+ 			</p:column>
+ 
+ 			<p:column headerText="Tarih">
+ 				<p:calendar disabled="true" id="date" value="#{gel.tarih}" />
+ 			</p:column>
+ 			
+ 			<p:column headerText="İşlemler" width="100">
+  				<p:commandButton icon="ui-icon-trash" update="tblMuhasebe :frmMuhasebe:br :frmMuhasebe:brr" actionListener="#{gelirController.gelirSil(gel.id)}">
+  				 <p:confirm header="Silme Onay" message="Kaydı Silmek İstediğinizden emin misiniz?" icon="ui-icon-alert" />
+  				</p:commandButton>
+  				<p:commandButton icon="ui-icon-pencil"  update=":frmMuhasebe:dlgMuhasebe :frmMuhasebe:br :frmMuhasebe:brr" oncomplete="PF('dlgMuhasebe').show();" actionListener="#{gelirController.gelirGuncelle(gel.id)}"></p:commandButton>
+  				
+  				 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+  			        <p:commandButton value="Evet" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+ 			        <p:commandButton value="İptal" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+ 			    </p:confirmDialog>
+ 			</p:column>
+ 			
+ 			<f:facet name="header">
+				Gelir Listesi
+			</f:facet>
+			<f:facet name="footer">
+				<p:commandButton value="Yeni" icon="ui-icon-plus" actionListener="#{gelirController.yenileGelir}"
+				update=":frmMuhasebe:dlgMuhasebe :frmMuhasebe:br  :frmMuhasebe:brr" oncomplete="PF('dlgMuhasebe').show();" />
+			</f:facet>
+ 		</p:dataTable>
+ 
+ 		
+ 
+ 
+ 		<p:dialog header="Gelir Tanımlama" resizable="false" modal="true"
+ 			widgetVar="dlgMuhasebe" id="dlgMuhasebe" minHeight="40">
+ 			<p:panelGrid columns="2">
+ 
+ 
+ 				<p:outputLabel>Konu</p:outputLabel>
+ 				<p:inputText value="#{gelirController.gelir.konu}"/>
+ 
+ 				<p:outputLabel>Miktar</p:outputLabel>
+ 				<p:inputText value="#{gelirController.gelir.miktar}" converter="#{bigDecimalConverter}"/>
+ 				
+ 				<p:outputLabel>Tarih</p:outputLabel>
+				<p:calendar locale="tr" maxdate="01/01/2030" pattern="dd/MM/yyyy"  value="#{gelirController.gelir.tarih}"/>
+				
+		        
+		         <p:outputLabel>Ogrenci Odeme</p:outputLabel>
+				<p:selectOneMenu value="#{gelirController.gelir.ogrenciOdeme}" effect="fold" converter="#{ogrenciOdemeConverter}">
+		            <f:selectItems value="#{gelirController.listeOgrenciOdeme}" var="grp" itemLabel="#{grp.id} #{grp.aciklama}" itemValue="#{grp}" />
+		        </p:selectOneMenu>
+ 
+ 			</p:panelGrid>
+ 			<f:facet name="footer">
+				<p:commandButton value="İptal" type="button" onclick="PF('dlgMuhasebe').hide();" />
+
+				<p:commandButton value="Kaydet" actionListener="#{gelirController.gelirKaydet}" 
+ 				update="tblMuhasebe dlgMuhasebe br brr" oncomplete="PF('dlgMuhasebe').hide();" />
+			</f:facet>
+ 			
+  		</p:dialog>
+
+
+
+           <p:panelGrid columns="2" id="dv" widgetVar="dv"   >
+ 					
+        <p:column >
+ 				<h:outputText  value="#{dovizWs.dolar}  #{dovizWs.dolarAlis}" />
+ 			</p:column>    
+ 			
+ 			<p:column >
+ 				<h:outputText  value="#{dovizWs.euro}  #{dovizWs.euroAlis}" />
+ 			</p:column>        
+               				
+               				
+               						
+         </p:panelGrid> 
+         
+         
+ 	         <p:panelGrid columns="2"   >
+ 	           
+			
+                   <p:chart  id="br" type="bar" model="#{gelirTabloController.animatedModel2}" style="width:400px;" />
+                   <p:chart  id="brr" type="bar" model="#{gelirTabloController.animatedModel1}" style="width:400px;" />
+                   
+                 </p:panelGrid>   
+                   
+
+
+           
+  	</h:form>
+  	</ui:define>
+ </ui:composition>

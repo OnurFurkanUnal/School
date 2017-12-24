@@ -1,0 +1,95 @@
+ <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/content/layout/template.xhtml">
+	<ui:define name="pageContent" >
+
+	<h:form id="frmikOgretmen">
+
+		<p:dataTable id="tblOgretmen" widgetVar="tblOgretmen" var="ogr" value="#{ikOgretmenController.ogretmenList}"
+		paginator="true"  rows="10"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+        rowsPerPageTemplate="5,10,15">
+			<p:column headerText="Id">
+				<h:outputText value="#{ogr.id}" />
+			</p:column>
+
+			<p:column headerText="Ad">
+				<h:outputText value="#{ogr.ad}" />
+			</p:column>
+
+			<p:column headerText="Soyad">
+				<h:outputText value="#{ogr.soyad}" />
+			</p:column>
+
+			<p:column headerText="Adres">
+				<h:outputText value="#{ogr.adres}" />
+			</p:column>
+			
+			<p:column headerText="Mail">
+				<h:outputText value="#{ogr.mail}" />
+			</p:column>
+			<p:column headerText="Tel">
+				<h:outputText value="#{ogr.tel}" />
+			</p:column>
+			<p:column headerText="Ucret">
+				<h:outputText value="#{ogr.ucret}" />
+			</p:column>
+			<p:column headerText="Kayıt Tarihi">
+				<h:outputText value="#{ogr.kayitTarihi}" />
+			</p:column>
+			
+			<p:column headerText="İşlemler" width="100">
+				<p:commandButton icon="ui-icon-trash" update="tblOgretmen" actionListener="#{ikOgretmenController.OgretmenSil(ogr.id)}">
+				 <p:confirm header="Silme Onay" message="Kaydı Silmek İstediğinizden emin misiniz?" icon="ui-icon-alert" />
+				 </p:commandButton>
+				 <p:commandButton icon="ui-icon-pencil"  update=":frmikOgretmen:dlgOgretmen" oncomplete="PF('dlgOgretmen').show();" actionListener="#{ikOgretmenController.OgretmenGuncelle(ogr.id)}"></p:commandButton>
+				 
+				 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			        <p:commandButton value="Evet" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			        <p:commandButton value="İptal" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			    </p:confirmDialog>
+			</p:column>
+		</p:dataTable>
+
+		<h:panelGrid columns="1" cellpadding="5">
+			<p:commandButton value="Yeni" icon="ui-icon-plus" type="button"
+				onclick="PF('dlgOgretmen').show();" />
+		</h:panelGrid>
+
+
+		<p:dialog header="Kullanıcı Tanımlama" resizable="false" modal="true"
+			widgetVar="dlgOgretmen" id="dlgOgretmen" minHeight="40">
+			<p:panelGrid columns="2">
+				<p:outputLabel>Adı</p:outputLabel>
+				<p:inputText value="#{ikOgretmenController.ogretmen.ad}"/>
+
+				<p:outputLabel>Soyadı</p:outputLabel>
+				<p:inputText value="#{ikOgretmenController.ogretmen.soyad}"/>
+				
+				<p:outputLabel>Adres</p:outputLabel>
+				<p:inputText value="#{ikOgretmenController.ogretmen.adres}"/>
+				
+				<p:outputLabel>Mail</p:outputLabel>
+				<p:inputText value="#{ikOgretmenController.ogretmen.mail}"/>
+				<p:outputLabel>Tel</p:outputLabel>
+				<p:inputText value="#{ikOgretmenController.ogretmen.tel}"/>
+				<p:outputLabel>Ucret</p:outputLabel>
+				<p:inputText value="#{ikOgretmenController.ogretmen.ucret}"/>
+				<p:outputLabel>KayitTarihi</p:outputLabel>
+				<p:calendar value ="#{ikOgretmenController.ogretmen.kayitTarihi}"/>
+				
+
+				<p:commandButton value="İptal" type="button" onclick="PF('dlgOgretmen').hide();" />
+
+				<p:commandButton value="Kaydet" actionListener="#{ikOgretmenController.OgretmenKaydet}" 
+				update="tblOgretmen dlgOgretmen" oncomplete="PF('dlgOgretmen').hide();" />
+			</p:panelGrid>
+		</p:dialog>
+
+	</h:form>
+
+	</ui:define>
+</ui:composition>

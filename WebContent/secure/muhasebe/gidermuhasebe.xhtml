@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  	xmlns:h="http://java.sun.com/jsf/html"
+  	xmlns:f="http://java.sun.com/jsf/core"
+  	xmlns:p="http://primefaces.org/ui"
+ 	xmlns:ui="http://java.sun.com/jsf/facelets"
+ 	template="/content/layout/template.xhtml">
+ 	<ui:define name="pageContent" >
+ 	<h:form id="frmMuhasebeGider">
+ 	
+ 		<p:dataTable id="tblMuhasebeGider" widgetVar="tblMuhasebeGider" var="git" value="#{giderController.giderList}"
+  		paginator="true"  rows="10"
+          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+          rowsPerPageTemplate="5,10,15">
+ 			<p:column headerText="Id">
+ 				<h:outputText value="#{git.id}" />
+ 			</p:column>
+ 
+ 			<p:column headerText="Aciklama">
+ 				<h:outputText value="#{git.konu}" />
+ 			</p:column>
+ 
+ 			<p:column headerText="Miktar">
+ 				<h:outputText value="#{git.miktar}" />
+ 			</p:column>
+ 
+ 			<p:column headerText="Tarih">
+ 				<h:outputText value="#{git.tarih}" />
+  			</p:column>
+  			
+  			<p:column headerText="İşlemler" width="100">
+  			<p:commandButton icon="ui-icon-trash" update="tblMuhasebeGider" actionListener="#{giderController.giderSil(git.id)}">
+  				 <p:confirm header="Silme Onay" message="Kaydı Silmek İstediğinizden emin misiniz?" icon="ui-icon-alert" />
+  				</p:commandButton>
+  					<p:commandButton icon="ui-icon-pencil"  update=":frmMuhasebeGider:dlgMuhasebeGider" oncomplete="PF('dlgMuhasebeGider').show();" actionListener="#{giderController.giderGuncelle(git.id)}"></p:commandButton>
+ 			
+  				 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+  			        <p:commandButton value="Evet" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+  			        <p:commandButton value="İptal" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+ 			    </p:confirmDialog>
+ 			</p:column>
+ 		</p:dataTable>
+  
+  		<h:panelGrid columns="1" cellpadding="5">
+  			<p:commandButton value="Yeni" icon="ui-icon-plus" type="button"
+  			onclick="PF('dlgMuhasebeGider').show();" />
+  		</h:panelGrid>
+  
+  
+  		<p:dialog header="Gelir Tanımlama" resizable="false" modal="true"
+  		widgetVar="dlgMuhasebeGider" id="dlgMuhasebeGider" minHeight="40">
+  			<p:panelGrid columns="2">
+  			<p:outputLabel>Konu</p:outputLabel>
+ 				<p:inputText value="#{giderController.gider.konu}"/>
+ 
+ 				<p:outputLabel>Miktar</p:outputLabel>
+ 				<p:inputText  value="#{giderController.gider.miktar}" converter="#{bigDecimalConverter}"/>
+  				
+  				<p:outputLabel>Tarih</p:outputLabel>
+				<p:calendar locale="tr" maxdate="01/01/2030" pattern="dd/MM/yyyy"  value="#{giderController.gider.tarih}"/>
+  
+  				<p:commandButton value="Kaydet" actionListener="#{giderController.giderKaydet}" 
+  					update="tblMuhasebeGider dlgMuhasebeGider" oncomplete="PF('dlgMuhasebeGider').hide();" />
+  			</p:panelGrid>
+  		</p:dialog>
+  
+  	</h:form>
+  	</ui:define>
+ </ui:composition>

@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/content/layout/template.xhtml">
+	<ui:define name="pageContent" >
+	<h:form id="frmKullanici">
+	<p:growl id="growl" showDetail="true" sticky="true" autoUpdate="true" life="5000" /> 
+	
+		<p:dataTable id="tblKullanici" widgetVar="tblKullanici" var="kul" value="#{kullaniciController.lazyModel}"
+		paginator="true"  rows="10" lazy="true" reflow="true"
+        paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+        rowsPerPageTemplate="5,10,15">
+			<p:column headerText="Id">
+				<h:outputText value="#{kul.id}" />
+			</p:column>
+
+			<p:column headerText="Ad">
+				<h:outputText value="#{kul.ad}" />
+			</p:column>
+
+			<p:column headerText="Soyad">
+				<h:outputText value="#{kul.soyad}" />
+			</p:column>
+
+			<p:column headerText="Kullanıcı Adı">
+				<h:outputText value="#{kul.kullaniciAdi}" />
+			</p:column>
+			
+			<p:column headerText="Üyelik Tarihi">
+				<p:calendar disabled="true" id="date" value="#{kul.uyelikTarihi}"/>
+			</p:column>
+			
+			<p:column headerText="İşlemler" width="100">
+				<p:commandButton icon="ui-icon-trash" update="tblKullanici" actionListener="#{kullaniciController.kullaniciSil(kul.id)}">
+				 <p:confirm header="Silme Onay" message="Kaydı Silmek İstediğinizden emin misiniz?" icon="ui-icon-alert" />
+				</p:commandButton>
+				<p:commandButton icon="ui-icon-pencil"  update=":frmKullanici:dlgKullanici" oncomplete="PF('dlgKullanici').show();" actionListener="#{kullaniciController.kullaniciGuncelle(kul.id)}"></p:commandButton>
+				
+				 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			        <p:commandButton value="Evet" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			        <p:commandButton value="İptal" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			    </p:confirmDialog>
+			</p:column>
+			
+			<f:facet name="header">
+				Kullanici Listesi
+			</f:facet>
+			<f:facet name="footer">
+				<p:commandButton value="Yeni" icon="ui-icon-plus" actionListener="#{kullaniciController.yeni}"
+				update=":frmKullanici:dlgKullanici" oncomplete="PF('dlgKullanici').show();" />
+			</f:facet>
+		</p:dataTable>
+
+
+		<p:dialog header="Kullanıcı Tanımlama" resizable="false" modal="true"
+			widgetVar="dlgKullanici" id="dlgKullanici" minHeight="40">
+			<p:panelGrid columns="2">
+
+				<p:outputLabel>Kullanıcı Adı</p:outputLabel>
+				<p:inputText value="#{kullaniciController.kullanici.kullaniciAdi}"/>
+
+				<p:outputLabel>Adı</p:outputLabel>
+				<p:inputText value="#{kullaniciController.kullanici.ad}"/>
+
+				<p:outputLabel>Soyadı</p:outputLabel>
+				<p:inputText value="#{kullaniciController.kullanici.soyad}"/>
+				
+				<p:outputLabel>Şifre</p:outputLabel>
+				<p:password value="#{kullaniciController.kullanici.sifre}"/>
+				
+				<p:outputLabel>Email</p:outputLabel>
+				<p:inputText id="email" value="#{kullaniciController.kullanici.email}"/>
+				
+				<p:outputLabel>Üyelik Tarihi</p:outputLabel>
+				<p:calendar locale="tr" maxdate="01/01/2030" pattern="dd/MM/yyyy"  value="#{kullaniciController.kullanici.uyelikTarihi}"/>
+
+			</p:panelGrid>
+			<f:facet name="footer">
+			<p:commandButton value="İptal" type="button" onclick="PF('dlgKullanici').hide();" />
+
+				<p:commandButton value="Kaydet" actionListener="#{kullaniciController.kullaniciKaydet}" 
+				update="tblKullanici dlgKullanici" oncomplete="PF('dlgKullanici').hide();" />
+			</f:facet>
+		</p:dialog>
+
+	</h:form>
+	</ui:define>
+</ui:composition>
